@@ -19,7 +19,7 @@
             <h3 class="nav-title">Skill Forge</h3>
         </a>
         <nav id="navbar" class="navbar">
-            <form action="{{ route('logout') }}" method="POST">
+            <form action="{{ route('logout') }}" method="GET">
                 @csrf
                 <button type="submit" class="dropdown-item">Logout</button>
             </form>
