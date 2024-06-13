@@ -57,14 +57,18 @@
 							<img src="{{ asset('img/user_icon.svg') }}" alt="" class="icon" />
 						</a>
 						<ul class="dropdown-menu text-center" aria-labelledby="userDropdown">
-							<li><a class="dropdown-item" href="#">Profile</a></li>
+							<li><a class="dropdown-item" href="{{route('profile')}}">Profile</a></li>
 							<li>
+								<hr class="dropdown-divider" />
+							</li>
+							<li><a class="dropdown-item" href="{{route('logout')}}">Logout</a></li>
+							<!-- <li>
 								<hr class="dropdown-divider" />
 							</li>
 							<form action="{{ route('logout') }}" method="GET">
                                 @csrf
                                 <button type="submit" class="dropdown-item">Logout</button>
-                            </form>
+                            </form> -->
 						</ul>
 					</li>
 					<li>
@@ -89,6 +93,12 @@
 	</section>
 	<section class="my-4">
 		<div class="container px-5 bg-white py-4 rounded-3">
+		<h1 class="text-primary fw-bold fs-5 mt-3">
+				Halo {{ $user -> username}}!
+			</h1>
+			<p>
+				<span class="fw-bold">Welcome to SkillForge</span>
+			</p>
 			<div class="d-flex gap-4 align-items-center">
 				<img src="{{ asset('img/user_icon_purple.svg') }}" alt="User" class="icon-post" />
 				<input type="text" class="feed" placeholder="Apa yang ingin anda bagi atau tanyakan?" />
