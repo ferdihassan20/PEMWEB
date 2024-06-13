@@ -92,6 +92,24 @@ class UserController extends Controller
 }
 
 
+public function updateAsUser(Request $request, $id)
+{
+    $request->validate([
+        'username' => 'required|string|max:255',
+        'password' => 'nullable|string|min:6', // nullable: password bisa kosong
+    ]);
+
+    $user = User::findOrFail($id);
+
+    $user->update([
+        'username' => $request->username,
+        'password' => $request->filled('password') ? bcrypt($request->password) : $user->password,
+    ]);
+
+    return redirect()->route('profile')->with('success', 'Profile updated successfully.');
+}
+
+
     // Remove the specified user from storage.
     public function destroy(User $user)
     {
