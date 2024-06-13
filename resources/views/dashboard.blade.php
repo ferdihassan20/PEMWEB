@@ -28,10 +28,16 @@
                     <li><a class="nav-link" href="#">Keunggulan</a></li>
                     <li><a class="nav-link" href="#">Testimoni</a></li>
                     <li><a class="nav-link" href="#">Mulai Diskusi</a></li>
+                    
+                    @if (Auth::check())
+                  
+                    <li><a class="getstarted" href="{{ url('logout') }}">Logout</a></li>
+                    @else
                     <li class="d-flex align-items-center">
                         <a class="nav-link" href="{{ url('login') }}">LOGIN</a>
                         <a class="getstarted" href="{{ url('register') }}">SIGN UP</a>
                     </li>
+                    @endif
                 </ul>
                 <i class="bi bi-list mobile-nav-toggle"></i>
             </nav>
