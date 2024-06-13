@@ -15,7 +15,7 @@
         <div class="login">
             <h2>Welcome to</h2>
             <h1>Skill Forge</h1>
-            <form id="register-form" method="POST" action="{{ route('register.store') }}">
+            <form id="register-form" method="POST" action="{{ route('register') }}">
            
             @csrf
 
