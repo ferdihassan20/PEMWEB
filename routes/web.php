@@ -13,6 +13,16 @@ Route::get('/community', function () {
   return view('community');
 })->name('community')->middleware('auth');
 
+//Profile
+Route::get('/profile', function () {
+  $user = auth()->user(); // Assuming you're retrieving the authenticated user
+  return view('profile', compact('user'));
+})->name('profile')->middleware('auth');
+
+Route::post('/profile', [UserController::class, 'updateAsUser'])->name('updateAsUser')->middleware('auth');
+Route::put('/profile/{id}', [UserController::class, 'updateAsUser'])->name('updateAsUser')->middleware('auth');
+
+
 //DASHBOARD
 Route::get('/dashboard', function () {
   return view('dashboard');
