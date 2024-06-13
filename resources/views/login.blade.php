@@ -15,7 +15,7 @@
         <div class="login">
             <h2>Welcome to</h2>
             <h1>Skill Forge</h1>
-            <form id="login-form" method="POST" action="{{ route('login.auth') }}">
+            <form id="login-form" method="POST" action="{{ route('login') }}">
                 @csrf
                 <div class="input-box">
                     @if(session()->has('loginError'))
@@ -48,7 +48,7 @@
                 <div class="register">
                     <label>
                         Don't have an account?
-                        <a href="{{ route('register.store') }}">Register</a>
+                        <a href="{{ route('register') }}">Register</a>
                     </label>
                 </div>
             </form>
