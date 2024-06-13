@@ -1,6 +1,7 @@
 <?php
 // app/Http/Controllers/UserController.php
 namespace App\Http\Controllers;
+use Illuminate\Support\Facades\Validator;
 
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -8,63 +9,88 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    // Display a listing of the users.
     public function index()
     {
         $users = User::all();
         return view('admin', compact('users'));
     }
-
-    // Show the form for creating a new user.
     public function create()
     {
-        return view('admin.users.create');
+        return view('create');
     }
 
     // Store a newly created user in storage.
-    public function store(Request $request)
-    {
-        $request->validate([
-            'email' => 'required|email|unique:users',
-            'username' => 'required|string|max:255',
-            'password' => 'required|string|min:6',
-            'role' => 'required|in:user,admin',
+
+    public function add(Request $request) {
+        // Validation rules
+        $validator = Validator::make($request->all(), [
+          'email' => 'required|email:dns|unique:users',
+          'username' => 'required|string|max:255',
+          'password' => 'required|string|min:6',
+          'role' => 'required|in:user,admin', // Ensure role is either User or Admin
+        ], [
+          // Custom error messages
+          'email.required' => 'Email is required.',
+          'email.email' => 'Please enter a valid email address.',
+          'email.unique' => 'Email is already taken.',
+          'username.required' => 'Username is required.',
+          'username.string' => 'Please enter a valid username.',
+          'username.max' => 'Username must not exceed 255 characters.',
+          'username.unique' => 'Username is already taken.',
+          'password.required' => 'Password is required.',
+          'password.string' => 'Please enter a valid password.',
+          'password.min' => 'Password must be at least 6 characters.',
+          'role.required' => 'Role selection is required.',
+          'role.in' => 'Please select a valid role (user or admin).',
         ]);
-
-        User::create([
-            'email' => $request->email,
-            'username' => $request->username,
-            'password' => Hash::make($request->password), // Ensure the password is hashed
-            'role' => $request->role,
+    
+        // If validation fails, return error response
+        if ($validator->fails()) {
+          return redirect()->back()->withErrors($validator)->withInput();
+        }
+    
+        $user = User::create([
+          'email' => $request->email,
+          'username' => $request->username,
+          'password' => bcrypt($request->password),
+          'role' => $request->role,
         ]);
-
-        return redirect()->route('admin')->with('success', 'User created successfully.');
-    }
-
+    
+        // Redirect to login page with success message
+        return redirect()->route('login')->with('success', 'Account created successfully. Please login.');
+      }
     // Show the form for editing the specified user.
-    public function edit(User $user)
-    {
-        return view('admin.users.edit', compact('user'));
+    public function edit($id)
+{
+    $user = User::find($id);
+
+    if (!$user) {
+        return redirect()->route('admin')->with('error', 'User not found.');
     }
+
+    return view('edit', compact('user'));
+}
 
     // Update the specified user in storage.
-    public function update(Request $request, User $user)
-    {
-        $request->validate([
-            'email' => 'required|email|unique:users,email,' . $user->id,
-            'username' => 'required|string|max:255',
-            'role' => 'required|in:user,admin',
-        ]);
+    public function update(Request $request, $id)
+{
+    $request->validate([
+        'email' => 'required|email|unique:users,email,' . $id,
+        'username' => 'required|string|max:255',
+        'role' => 'required|in:user,admin',
+    ]);
 
-        $user->update($request->only('email', 'username', 'role'));
+    $user = User::findOrFail($id);
 
-        // Check if a new password is provided and update it
-        if ($request->filled('password')) {
-            $user->update(['password' =>$request->password]);
-        }
+    $user->update([
+        'email' => $request->email,
+        'username' => $request->username,
+        'role' => $request->role,
+    ]);
 
-        return redirect()->route('admin')->with('success', 'User updated successfully.');
-    }
+    return redirect()->route('admin')->with('success', 'User updated successfully.');
+}
+
 
     // Remove the specified user from storage.
     public function destroy(User $user)
